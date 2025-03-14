@@ -1,2 +1,1 @@
-# auth-service-go
-Oauth service with custom JWT signing and verification
+This OAuth service authenticates users through an external provider like Google, verifying their authorization before issuing a custom JWT token. It generates a private key for signing and a public key for verification. The public key can be shared asynchronously with other microservices, allowing them to verify JWT tokens independently without needing to call the auth service. This enables decentralized authentication while maintaining security and flexibility across a microservices architecture.
