@@ -1,9 +1,13 @@
--- +goose Up
--- +goose StatementBegin
-SELECT 'up SQL query';
--- +goose StatementEnd
+-- +goose up
 
--- +goose Down
--- +goose StatementBegin
-SELECT 'down SQL query';
--- +goose StatementEnd
+CREATE TABLE keys (
+    private_key text NOT NULL,
+    public_key text NOT NULL,
+    secondary_public_key text NOT NULL
+);
+
+CREATE TABLE session_tokens (
+    id uuid PRIMARY KEY,
+    email varchar(100),
+    expires_at timestamptz NOT NULL
+);
