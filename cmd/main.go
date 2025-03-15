@@ -1,16 +1,36 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vladovsiychuk/auth-service-go/pkg/helper"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
+	postgresDB := setupPostgres()
+
 	r.Run(":8080")
+}
+
+func setupPostgres() *gorm.DB {
+	host := helper.GetEnv("POSTGRES_HOST", "localhost")
+	user := helper.GetEnv("POSTGRES_USER", "root")
+	password := helper.GetEnv("POSTGRES_PASSWORD", "rootpassword")
+	dbname := helper.GetEnv("POSTGRES_DB_NAME", "postgres")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable", host, user, password, dbname)
+	postgresDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	return postgresDB
 }
 
 func CORSMiddleware() gin.HandlerFunc {
