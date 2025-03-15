@@ -1,5 +1,4 @@
 -- +goose up
-
 CREATE TABLE keys (
     private_key text NOT NULL,
     public_key text NOT NULL,
