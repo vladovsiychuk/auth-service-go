@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vladovsiychuk/auth-service-go/configs"
+	"github.com/vladovsiychuk/auth-service-go/internal/auth"
 	"github.com/vladovsiychuk/auth-service-go/pkg/helper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,7 +19,22 @@ func main() {
 	postgresDB := setupPostgres()
 	configs.SetupDbMigration(postgresDB)
 
+	injectDependencies(postgresDB, r)
+
 	r.Run(":8080")
+}
+
+func injectDependencies(
+	postgresDB *gorm.DB,
+	r *gin.Engine,
+) {
+	sessionTokenRepository := auth.NewSessionTokenRepository(postgresDB)
+
+	authRepository := auth.NewKeyRepository(postgresDB)
+	authService := auth.NewService(authRepository, sessionTokenRepository)
+	authService.Init()
+	authHandler := auth.NewRouter(authService)
+	authHandler.RegisterRoutes(r)
 }
 
 func setupPostgres() *gorm.DB {
