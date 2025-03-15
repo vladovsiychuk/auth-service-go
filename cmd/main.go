@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vladovsiychuk/auth-service-go/configs"
 	"github.com/vladovsiychuk/auth-service-go/pkg/helper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	postgresDB := setupPostgres()
+	configs.SetupDbMigration(postgresDB)
 
 	r.Run(":8080")
 }
